@@ -1,5 +1,7 @@
+const appPort = 'http://localhost:3001';
+
 export const getFactorial = async (value) => {
-    const result = await fetch(`http://localhost:3001/getfactorialvalue/${value}`);
+    const result = await fetch(`${appPort}/getfactorialvalue/${value}`);
     if (result.status === 200) {
         return result.json();
     } else {
@@ -11,7 +13,7 @@ export const getFactorial = async (value) => {
 };
 
 export const getFibonacci = async (value) => {
-    const result = await fetch(`http://localhost:3001/getfibonaccivalue/${value}`);
+    const result = await fetch(`${appPort}/getfibonaccivalue/${value}`);
     if (result.status === 200) {        
         return result.json();
     } else {

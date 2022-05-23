@@ -18,15 +18,12 @@ const Home = () => {
     const [formErrors, setFormErrors] = useState([]);
     const [factorialButtonDisabled, setFactorialButtonDisabled] = useState(true);
     const [fibonacciButtonDisabled, setFibonacciButtonDisabled] = useState(true);
-    const [factorialValueBoxDisplay, setFactorialValueBoxDisplay] = useState('none');
-    const [fibonacciValueBoxDisplay, setFibonacciValueBoxDisplay] = useState('none');
 
     const fetchFactorialValue = async () => {
         try {
             const result = await getFactorial(stateData.factorialValue);
-            if (result) {
+            if (typeof(result) != 'undefined') {
                 setStateData({ ...stateData, factorialValueResult: result });
-                setFactorialValueBoxDisplay('flex');
             }
         } catch (error) {
             setHttpError(error.message);
@@ -36,9 +33,8 @@ const Home = () => {
     const fetchFibonacciValue = async () => {
         try {
             const result = await getFibonacci(stateData.fibonacciValue);
-            if (result) {
+            if (typeof(result) != 'undefined') {
                 setStateData({ ...stateData, fibonacciValueResult: result });
-                setFibonacciValueBoxDisplay('flex');
             }
         } catch (error) {
             setHttpError(error.message);
@@ -63,7 +59,6 @@ const Home = () => {
                         onKeyUp={() => {
                             setHttpError('');
                             setStateData({ ...stateData, factorialValueResult: '' });
-                            setFactorialValueBoxDisplay('none');
                         }}
                         label='Faktoriális érték'
                         type='number'
@@ -77,7 +72,7 @@ const Home = () => {
                         variant='contained'
                         size='large'
                     >Faktoriális érték</Button>
-                    <div className='resultBox' display={factorialValueBoxDisplay}>
+                    <div className='resultBox'>
                         {stateData.factorialValueResult}
                     </div>
                 </section>
@@ -89,7 +84,6 @@ const Home = () => {
                         onKeyUp={() => {
                             setHttpError('');
                             setStateData({ ...stateData, fibonacciValueResult: '' });
-                            setFibonacciValueBoxDisplay('none');
                         }}
                         label='Fibonacci érték'
                         type='number'
@@ -103,7 +97,7 @@ const Home = () => {
                         onClick={() => fetchFibonacciValue()}
                         variant='contained'
                     >Fibonacci érték</Button>
-                    <div className='resultBox' display={fibonacciValueBoxDisplay}>
+                    <div className='resultBox'>
                         {stateData.fibonacciValueResult}
                     </div>
                 </section>

@@ -35,6 +35,8 @@ function factorialize(number) {
 
     if (number < 0) {
         return 'A megadott szám nem lehet negatív!';
+    } else if (number > 170) {
+        return '170 a megengedett legnagyobb szám!';
     } else if (number === '1' || number === '0') {
         return 1;
     } else if (!regexNumberFormat.test(number)) {
@@ -53,6 +55,8 @@ function fibonacciSequence(number) {
 
     if (number < 0) {
         return 'A megadott szám nem lehet negatív!';
+    } else if (number > 1476) {
+        return '1476 a megengedett legnagyobb szám!';
     } else if (!regexNumberFormat.test(number)) {
         return 'Kérem csak számokat adjon meg!';
     } else {
