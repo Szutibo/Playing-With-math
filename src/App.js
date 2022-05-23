@@ -1,25 +1,118 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { getFactorial, getFibonacci } from './components/Fetch';
+import { buttonChecker, validate } from './components/Utility';
+import './style.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// MUI imports
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+const Home = () => {
+    const [stateData, setStateData] = useState({
+        factorialValue: '',
+        fibonacciValue: '',
+        factorialValueResult: '',
+        fibonacciValueResult: ''
+    });
+    const [httpError, setHttpError] = useState('');
+    const [formErrors, setFormErrors] = useState([]);
+    const [factorialButtonDisabled, setFactorialButtonDisabled] = useState(true);
+    const [fibonacciButtonDisabled, setFibonacciButtonDisabled] = useState(true);
+    const [factorialValueBoxDisplay, setFactorialValueBoxDisplay] = useState('none');
+    const [fibonacciValueBoxDisplay, setFibonacciValueBoxDisplay] = useState('none');
+
+    const fetchFactorialValue = async () => {
+        try {
+            const result = await getFactorial(stateData.factorialValue);
+            if (result) {
+                setStateData({ ...stateData, factorialValueResult: result });
+                setFactorialValueBoxDisplay('flex');
+            }
+        } catch (error) {
+            setHttpError(error.message);
+        }
+    }
+
+    const fetchFibonacciValue = async () => {
+        try {
+            const result = await getFibonacci(stateData.fibonacciValue);
+            if (result) {
+                setStateData({ ...stateData, fibonacciValueResult: result });
+                setFibonacciValueBoxDisplay('flex');
+            }
+        } catch (error) {
+            setHttpError(error.message);
+        }
+    }
+
+    useEffect(() => {
+        setFormErrors(validate(stateData));
+    }, [stateData])
+
+    return (
+        <main>
+            <h1>Faktoriális és Fibonacci érték kalkulátor</h1>
+            <hr></hr>
+            <div onKeyUp={() => {
+                buttonChecker(stateData, formErrors, setFibonacciButtonDisabled, setFactorialButtonDisabled);
+            }} className='container'>
+                <section className='factorialBox'>
+                    <TextField
+                        className='textField'
+                        onChange={(e) => setStateData({ ...stateData, factorialValue: e.target.value })}
+                        onKeyUp={() => {
+                            setHttpError('');
+                            setStateData({ ...stateData, factorialValueResult: '' });
+                            setFactorialValueBoxDisplay('none');
+                        }}
+                        label='Faktoriális érték'
+                        type='number'
+                        value={stateData.factorialValue}
+                        size='medium'
+                    />
+                    <label style={{ display: 'block' }}>{formErrors.factorialValue}</label>
+                    <Button
+                        disabled={factorialButtonDisabled}
+                        onClick={() => fetchFactorialValue()}
+                        variant='contained'
+                        size='large'
+                    >Faktoriális érték</Button>
+                    <div className='resultBox' display={factorialValueBoxDisplay}>
+                        {stateData.factorialValueResult}
+                    </div>
+                </section>
+                <hr></hr>
+                <section className='fibonacciBox'>
+                    <TextField
+                        className='textField'
+                        onChange={(e) => setStateData({ ...stateData, fibonacciValue: e.target.value })}
+                        onKeyUp={() => {
+                            setHttpError('');
+                            setStateData({ ...stateData, fibonacciValueResult: '' });
+                            setFibonacciValueBoxDisplay('none');
+                        }}
+                        label='Fibonacci érték'
+                        type='number'
+                        value={stateData.fibonacciValue}
+                        size='normal'
+                    />
+                    <label style={{ display: 'block' }}>{formErrors.fibonacciValue}</label>
+                    <Button
+                        size='large'
+                        disabled={fibonacciButtonDisabled}
+                        onClick={() => fetchFibonacciValue()}
+                        variant='contained'
+                    >Fibonacci érték</Button>
+                    <div className='resultBox' display={fibonacciValueBoxDisplay}>
+                        {stateData.fibonacciValueResult}
+                    </div>
+                </section>
+                <div className='errorContainer'>
+                    {httpError}
+                </div>
+            </div>
+        </main>
+    )
 }
 
-export default App;
+export default Home
